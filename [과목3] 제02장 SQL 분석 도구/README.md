@@ -155,22 +155,22 @@ and s.sid = (select sid from v$mystat where rownum = 1) ;
 </table>
 
 <table>
-    <tr>
-        <td align="center">query</td><td align="center">결과</td>
-    </tr>
-    <tr>
-    <td>
-        ```sql
-        select *
-        from table(
-            DBMS_XPLAN.DISPLAY_CURSOR(null, null, 'allstats')
-        );
-        ```
-    </td>
-    <td>
-        <img src="https://github.com/user-attachments/assets/82a253e8-487e-4fdd-aa6a-7de581422309"/>
-    </td>
-    </tr>
+<tr>
+<td align="center">query</td><td align="center">결과</td>
+</tr>
+<tr>
+<td>
+
+```sql
+select *
+from table(DBMS_XPLAN.DISPLAY_CURSOR(null, null, 'allstats'));
+```
+
+</td>
+<td>
+<img src="https://github.com/user-attachments/assets/82a253e8-487e-4fdd-aa6a-7de581422309"/>
+</td>
+</tr>
 </table>
 
 # 제 3절 응답 시간 분석
