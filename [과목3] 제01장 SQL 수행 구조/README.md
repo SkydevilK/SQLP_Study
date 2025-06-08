@@ -270,37 +270,34 @@
 </div>
    
 <table>
-<tr>
-<td align="center" colspan="2">엔진</td><td align="center">역할</td>
-</tr>
-<tr>
-<td align="center" colspan="2">Parser</td>
-<td>
-SQL 문장의 개별 구성요소를 분석하고 파싱해서 파싱 트리(내부적인 구조체)를 생성<br>
-SQL의 문법적 오류가 없는지(Syntax 체크), 의미상 오류가 없는지(Semantic 체크) 확인
-</td>
-</tr>
-<tr>
-<td align="center" rowspan="3">Optimizer</td>
-<td align="center">Query Transformer</td>
-<td>파싱된 SQL을 좀 더 일반적이고 표준적인 형태로 반환</td>
-</tr>
-<tr>
-<td align="center">Estimator</td>
-<td>쿼리 수행의 각 단계의 선택도, 카디널리티, 비용을 계산 &rarr; 실행계획 전체에 대한 총 비용 계산</td>
-</tr>
-<tr>
-<td align="center">Plan Generator</td>
-<td>쿼리 수행 시 후보군이 될만한 실행계획들을 생성</td>
-</tr>
-<tr>
-<td colspan="2" align="center">Row-Source Generator</td>
-<td>옵티마이저가 생성한 실행계획을 SQL 엔진이 실행할 수 있는 코드(또는 프로시저) 형태로 변환</td>
-</tr>
-<tr>
-<td colspan="2" align="center">SQL Engine</td>
-<td>SQL 실행</td>
-</tr>
+    <tr>
+        <td align="center" colspan="2">엔진</td><td align="center">역할</td>
+    </tr>
+    <tr>
+        <td align="center" colspan="2">Parser</td>
+        <td>SQL 문장의 개별 구성요소를 분석하고 파싱해서 파싱 트리(내부적인 구조체)를 생성<br>SQL의 문법적 오류가 없는지(Syntax 체크), 의미상 오류가 없는지(Semantic 체크) 확인</td>
+    </tr>
+    <tr>
+        <td align="center" rowspan="3">Optimizer</td>
+        <td align="center">Query Transformer</td>
+        <td>파싱된 SQL을 좀 더 일반적이고 표준적인 형태로 반환</td>
+    </tr>
+    <tr>
+        <td align="center">Estimator</td>
+        <td>쿼리 수행의 각 단계의 선택도, 카디널리티, 비용을 계산 &rarr; 실행계획 전체에 대한 총 비용 계산</td>
+    </tr>
+    <tr>
+        <td align="center">Plan Generator</td>
+        <td>쿼리 수행 시 후보군이 될만한 실행계획들을 생성</td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">Row-Source Generator</td>
+        <td>옵티마이저가 생성한 실행계획을 SQL 엔진이 실행할 수 있는 코드(또는 프로시저) 형태로 변환</td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">SQL Engine</td>
+        <td>SQL 실행</td>
+    </tr>
 </table>
 
 ## 3. SQL 옵티마이저
@@ -331,36 +328,92 @@ SQL의 문법적 오류가 없는지(Syntax 체크), 의미상 오류가 없는�
 
 ### Oracle 힌트 종류
 <table>
-  <tr>
-    <th>분류</th>
-    <th>힌트</th>
-  </tr>
-  <tr>
-    <td>최적화 목표</td>
-    <td>all_rows<br>first_rows(n)</td>
-  </tr>
-  <tr>
+    <tr>
+        <th>분류</th>
+        <th>힌트</th>
+    </tr>
+    <tr>
+        <td>최적화 목표</td>
+        <td>all_rows<br>first_rows(n)</td>
+    </tr>
+    <tr>
     <td>액세스 경로</td>
     <td>full<br>cluster<br>hash<br>index, no_index<br>index_asc, index_desc<br>index_combine<br>index_join<br>index_ffs, no_index_ffs<br>index_ss, no_index_ss<br>index_ss_asc, index_ss_desc</td>
-  </tr>
-  <tr>
-    <td>쿼리 변환</td>
-    <td>no_query_transformation<br>use_concat<br>no_expand<br>rewrite, no_rewirte<br>merge, no_merge<br>star_transformation, no_star_transformation<br>fact, no_fact<br>unnest, no_unnest</td>
-  </tr>
-  <tr>
-    <td>조인 순서</td>
-    <td>ordered<br>leading</td>
-  </tr>
-  <tr>
-    <td>조인 방식</td>
-    <td>use_nl, no_use_nl<br>use_nl_with_index<br>use_merge, no_use_merge<br>use_hash, no_use_hash</td>
-  </tr>
-  <tr>
-    <td>병렬 처리</td>
-    <td>parallel, no_parallel<br>pq_distribute<br>parallel_index, no_parallel_index</td>
-  </tr>
-  <tr>
-    <td>기타</td>
-    <td>append, noappend<br>cache, nocache<br>push_pred, no_push_pred<br>push_subq, no_push_subq<br>qb_name<br>cursor_sharing_exact<br>driving_site<br>dynamic_sampling<br>model_min_analysis</td>
-  </tr>
+    </tr>
+    <tr>
+        <td>쿼리 변환</td>
+        <td>no_query_transformation<br>use_concat<br>no_expand<br>rewrite, no_rewirte<br>merge, no_merge<br>star_transformation, no_star_transformation<br>fact, no_fact<br>unnest, no_unnest</td>
+    </tr>
+    <tr>
+        <td>조인 순서</td>
+        <td>ordered<br>leading</td>
+    </tr>
+    <tr>
+        <td>조인 방식</td>
+        <td>use_nl, no_use_nl<br>use_nl_with_index<br>use_merge, no_use_merge<br>use_hash, no_use_hash</td>
+    </tr>
+    <tr>
+        <td>병렬 처리</td>
+        <td>parallel, no_parallel<br>pq_distribute<br>parallel_index, no_parallel_index</td>
+    </tr>
+    <tr>
+        <td>기타</td>
+        <td>append, noappend<br>cache, nocache<br>push_pred, no_push_pred<br>push_subq,no_push_subq<br>qb_name<br>cursor_sharing_exact<br>driving_site<br>dynamic_sampling<br>model_min_analysis</td>
+    </tr>
 </table>
+
+# 제 3절 데이터베이스 I/O 매커니즘
+
+## 1. 블록 단위 I/O
+
+> SQL 성능을 좌우하는 가장 중요한 성능지표는 액세스하는 블록 개수이다.<br>
+> 옵티마이저의 판단에 가장 큰 영향을 미치는 것도 액세스해야 할 블록 개수이다.
+
+- 데이터 파일에서 DB 버퍼 캐시로 블록을 적재할 때
+- 데이터 파일에서 블록을 직접 읽고 쓸 때
+- 버퍼 캐시에서 블록을 읽고 쓸 때
+- 버퍼 캐시에서 변경된 블록을 다시 데이터 파일에 쓸 때
+
+## 2. 메모리 I/O vs 디스크 I/O
+
+### 가. I/O 효율화 튜닝의 필요성
+
+> 디스크를 경유한 데이터 입출력은 디스크의 액세스 암(Arm)이 움직이면서 헤드를 통해 데이터를 읽고 쓰기 때문에 느린 반면,<br>
+> 메모리를 통한 입출력은 전기적 신호에 불과하기 때문에 디스크를 통한 I/O에 비해 매우 빠르다.
+
+- 메모리는 물리적으로 한정된 자원이므로, 디스크 I/O를 최소화하고 버퍼 캐시 효율을 높이는 것이 데이터베이스 I/O 튜닝의 목표
+
+### 나. 버퍼 캐시 히트율(BCHR, Buffer Cache Hit Ratio)
+
+> 버퍼 캐시 효율을 측정하는 지표<br>
+> 전체 읽은 불록 중에서 메모리 버퍼 캐시에서 찾은 비율<br>
+> BCHR = (버퍼 캐시에서 곧바로 찾은 블록 수 / 총 읽은 블록 수) X 100
+
+### 다. 네트워크, 파일시스템 캐시가 I/O 효율에 미치는 영향
+
+- 네트워크 전송량에 따른 성능 저하
+- 논리적인 블록 요청 횟수를 최소화 하도록 튜닝
+
+## 3. Sequential I/O vs Random I/O
+
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/e7a8aef4-5b2b-448c-b1b1-355c79cc392b"/>
+</div>
+
+- `시퀀셜 액세스` : 차례대로 읽어 나가는 방식(1 ~ 5)
+- `랜덤 액세스` : 한 건을 읽기 위해 한 블록씩 접근(4, 6)
+
+## 4. Single Block I/O vs MultiBlock I/O
+
+- `Single Block I/O` : 한 번의 I/O Call에 하나의 데이터 블록만 읽어 메모리에 적재하는 방식
+    - 인덱스를 통해 테이블을 액세스할 때 인덱스와 테이블 블록 모두 이 방식을 사용
+- `MultiBlock I/O` : I/O Call이 필요한 시점에 인접한 블록들을 같이 읽어 메모리에 적재하는 방식
+    - '인접한 블록' : 한 익스텐트(Extent)내에 속한 블록
+ 
+## 5. I/O 효율화 원리
+
+> 논리적인 I/O 요청 횟수를 최소화하는 것이 I/O 효율화 튜닝의 핵심 원리
+
+- 필요한 최소 블록만 읽도록 SQL 작성
+- 최적의 옵티마이징 팩터 제공
+- 옵티마이저 힌트를 사용해 최적의 액세스 경로로 유도
