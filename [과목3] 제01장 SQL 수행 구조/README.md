@@ -246,7 +246,7 @@
 
 > 로그 엔트리를 파일에 곧바로 기록하는 것이 아닌 로그 버퍼(Log Buffer)에 기록한다.
 
-#### PGA
+#### 라. PGA
 
 > 각 Oracle 서버 프로세스는 자신만의 PGA(Process, Program, Private Global Area) 메모리 영역을 할당받고, 이를 프로세스에 종속적인 고유 데이터를 저장하는 용도로 사용한다.<br>
 > PGA는 다른 프로세스와 공유되지 않는 독립적인 메모리 공간으로서, 래치 매커니즘이 필요 없어 SGA 버퍼 캐시에서 읽는 것보다 훨씬 빠르다.
@@ -254,3 +254,113 @@
 - `User Global Area(UGA)` : 하나의 프로세스가 여러 개 세션을 위해 일하기 위해 각 세션을 위한 독립적인 메모리 공간
 - `Call Global Area(CGA)` : 하나의 데이터베이스 Call을 넘어서 다음 Call까지 계속 참조돼야 하는 정보는 UGA, Call이 진행되는 동안에만 필요한 데이터는 CGA에 담는다.
 - `Sort Area` : 데이터 정렬을 위해 사용되는 Sort Area는 소트 오퍼레이션이 진행되는 동안 공간이 부족해질 때마다 청크(Chunk) 단위로 조금씩 할당된다.
+
+# 제 2절 SQL 처리 과정
+
+## 1. 구조적, 집합적, 선언적 질의 언어
+
+> SQL의 정의
+> 원하는 결과 집합을 구조적, 집합적으로 선언하지만, 그 결과 집합을 만드는 과정은 절차적일 수밖에 없다.<br>
+> 프로시저가 필요한데, 그런 프로시저를 만들어 내는 DBMS 내부 엔진이 바로 SQL 옵티마이저다.
+
+## 2. SQL 처리 과정
+
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/711eca69-bc94-460f-9ff8-a910655301db"/>
+</div>
+   
+<table>
+<tr>
+<td align="center" colspan="2">엔진</td><td align="center">역할</td>
+</tr>
+<tr>
+<td align="center" colspan="2">Parser</td>
+<td>
+SQL 문장의 개별 구성요소를 분석하고 파싱해서 파싱 트리(내부적인 구조체)를 생성<br>
+SQL의 문법적 오류가 없는지(Syntax 체크), 의미상 오류가 없는지(Semantic 체크) 확인
+</td>
+</tr>
+<tr>
+<td align="center" rowspan="3">Optimizer</td>
+<td align="center">Query Transformer</td>
+<td>파싱된 SQL을 좀 더 일반적이고 표준적인 형태로 반환</td>
+</tr>
+<tr>
+<td align="center">Estimator</td>
+<td>쿼리 수행의 각 단계의 선택도, 카디널리티, 비용을 계산 &rarr; 실행계획 전체에 대한 총 비용 계산</td>
+</tr>
+<tr>
+<td align="center">Plan Generator</td>
+<td>쿼리 수행 시 후보군이 될만한 실행계획들을 생성</td>
+</tr>
+<tr>
+<td colspan="2" align="center">Row-Source Generator</td>
+<td>옵티마이저가 생성한 실행계획을 SQL 엔진이 실행할 수 있는 코드(또는 프로시저) 형태로 변환</td>
+</tr>
+<tr>
+<td colspan="2" align="center">SQL Engine</td>
+<td>SQL 실행</td>
+</tr>
+</table>
+
+## 3. SQL 옵티마이저
+
+> 사용자가 원하는 작업을 가장 효율적으로 수행할 수 있는 최적의 데이터 액세스 경로를 선택해 주는 DBMS의 핵심 엔진
+
+1. 사용자로부터 전달받은 쿼리를 수행하는 데 후보군이 될만한 실행계획들을 찾아낸다.
+2. 데이터 딕셔너리(Data Dictionary)에 미리 수집해 둔 오브젝트 통계 및 시스템 통계정보를 이용해 각 실행계획의 예상비용을 산정한다.
+3. 최저 비용을 나타내는 실행계획을 선택한다.
+
+## 4. 실행계획과 비용
+
+> SQL 옵티마이저가 생성한 처리절차를 사용자가 확인할 수 있도록 다음과 같이 트리 구조로 표현한 것이 실행계획이다.
+
+## 5. 옵티마이저 힌트
+
+> 개발자가 직접 인덱스를 지정하거나 조인 방식을 변경함으로써 더 좋은 실행계획으로 유도하는 매커니즘
+
+### 힌트가 무시되는 경우
+
+- 문법적 오류
+- 의미적으로 안 맞게 힌트를 기술
+    - ex) 서브쿼리에 unnest와 push_subq를 같이 기술한 경우 (unnest되지 않은 서브쿼리만이 push_subq 힌트의 적용 대상)
+- 잘못된 참조 사용
+    - ex) 없는 테이블이나 별칭(Alias)을 사용하거나 없는 인덱스명을 지정한 경우 등
+- 논리적으로 불가능한 액세스 경로
+    - ex) 조인절에 등치(=) 조건이 하나도 없는데 해시 조인으로 유도, null 허용칼럼에 대한 인덱스를 이용해 전체 건수를 세려고 시도하는 등
+
+### Oracle 힌트 종류
+<table>
+  <tr>
+    <th>분류</th>
+    <th>힌트</th>
+  </tr>
+  <tr>
+    <td>최적화 목표</td>
+    <td>all_rows<br>first_rows(n)</td>
+  </tr>
+  <tr>
+    <td>액세스 경로</td>
+    <td>full<br>cluster<br>hash<br>index, no_index<br>index_asc, index_desc<br>index_combine<br>index_join<br>index_ffs, no_index_ffs<br>index_ss, no_index_ss<br>index_ss_asc, index_ss_desc</td>
+  </tr>
+  <tr>
+    <td>쿼리 변환</td>
+    <td>no_query_transformation<br>use_concat<br>no_expand<br>rewrite, no_rewirte<br>merge, no_merge<br>star_transformation, no_star_transformation<br>fact, no_fact<br>unnest, no_unnest</td>
+  </tr>
+  <tr>
+    <td>조인 순서</td>
+    <td>ordered<br>leading</td>
+  </tr>
+  <tr>
+    <td>조인 방식</td>
+    <td>use_nl, no_use_nl<br>use_nl_with_index<br>use_merge, no_use_merge<br>use_hash, no_use_hash</td>
+  </tr>
+  <tr>
+    <td>병렬 처리</td>
+    <td>parallel, no_parallel<br>pq_distribute<br>parallel_index, no_parallel_index</td>
+  </tr>
+  <tr>
+    <td>기타</td>
+    <td>append, noappend<br>cache, nocache<br>push_pred, no_push_pred<br>push_subq, no_push_subq<br>qb_name<br>cursor_sharing_exact<br>driving_site<br>dynamic_sampling<br>model_min_analysis</td>
+  </tr>
+</table>
